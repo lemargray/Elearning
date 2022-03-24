@@ -24,9 +24,9 @@ namespace Elearning.Controllers
         }
 
         [HttpGet]
-        public IActionResult list()
+        public IActionResult list([FromQuery] int studentId)
         {
-            return Ok(CourseService.AvailableCourses(1));
+            return Ok(CourseService.AvailableCourses(studentId));
         }
 
         [HttpGet]

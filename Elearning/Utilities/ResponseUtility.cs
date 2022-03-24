@@ -16,7 +16,7 @@ namespace Elearning.Utilities
 
         public static ServiceResponse<string> Error(string errorCode, string message)
         {
-            return new ServiceResponse<string>(true, errorCode, message, null);
+            return new ServiceResponse<string>(false, errorCode, message, null);
         }
 
         public static ServiceResponse<string> Success(string message, string data)
@@ -31,12 +31,12 @@ namespace Elearning.Utilities
 
         public static ServiceResponse<string> Error(string errorCode, string message, string data)
         {
-            return new ServiceResponse<string>(true, errorCode, message, data);
+            return new ServiceResponse<string>(false, errorCode, message, data);
         }
 
         public static ServiceResponse<Student> Error(string errorCode, string message, Student data)
         {
-            return new ServiceResponse<Student>(true, errorCode, message, data);
+            return new ServiceResponse<Student>(false, errorCode, message, data);
         }
 
     }

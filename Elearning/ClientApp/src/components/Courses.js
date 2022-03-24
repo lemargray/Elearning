@@ -13,7 +13,9 @@ export default function Courses(props) {
     const history = useHistory();
 
     useEffect(() => {
-        fetch("/api/courses", {
+        const studentId = localStorage.getItem('studentId');
+
+        fetch("/api/courses?studentId=" + studentId, {
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token')
             }

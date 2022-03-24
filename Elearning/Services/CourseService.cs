@@ -34,6 +34,7 @@ namespace Elearning.Services
         {
             var courses = FacilitiesDb.Courses
                 .Where(c => !FacilitiesDb.CourseStudents
+                    .Where(cs => cs.StudentId == studentId)
                     .Select(cs => cs.CourseId)
                     .Contains(c.CourseId)
                 ).Select(c => new AvailableCoursesResponse { LecturerId = c.Lecturer.LecturerId, CourseId = c.CourseId, Title = c.Name, Lecturer = c.Lecturer.Name, OfferingDate = c.OfferingDate });

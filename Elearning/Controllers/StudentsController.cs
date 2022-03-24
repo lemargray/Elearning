@@ -4,6 +4,7 @@ using Elearning.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,12 +20,14 @@ namespace Elearning.Controllers
         protected CourseService CourseService { get; }
 
         public StudentService StudentService { get; }
+        public IConfiguration Configuration { get; }
         //public IHttpContextAccessor COntext { get; }
 
-        public StudentsController(CourseService courseService, StudentService studentService)
+        public StudentsController(CourseService courseService, StudentService studentService, IConfiguration configuration)
         {
             CourseService = courseService;
             StudentService = studentService;
+            Configuration = configuration;
         }
 
         [HttpPost]
@@ -53,7 +56,7 @@ namespace Elearning.Controllers
 
             var course = CourseService.GetCourse(request.CourseId);
 
-            EmailUtility.ApprovalEmail(student.Email, student.Name, course.Name);
+            EmailUtility.SendApprovalEmail(Configuration, student.Email, student.Name, course.Name);
 
             return Ok( ResponseUtility.Success(Message.Success) );
         }

@@ -65,6 +65,8 @@ namespace Elearning.Controllers
 
             StudentService.CreateStudent(student);
 
+            EmailUtility.SendLoginCredential(Configuration, request.Email, request.Name, student.StudentId.ToString());
+
             return Ok(ResponseUtility.Success(Message.Success));
         }
 
@@ -96,11 +98,11 @@ namespace Elearning.Controllers
 
         [HttpPost]
         [Route("email")]
-        public IActionResult email(string email, string name, string courseName)
+        public IActionResult email(string email, string recipientName, string subject, string body)
         {
-            EmailUtility.ApprovalEmail(email, name, courseName);
+            EmailUtility.SendEmail(Configuration, email, recipientName, subject, body);
 
-            return Ok();
+            return Ok("Email Sent Sucessfully");
         }
     }
 }

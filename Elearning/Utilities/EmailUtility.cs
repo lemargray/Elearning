@@ -1,5 +1,6 @@
 ﻿using Elearning.DataTransferObjects;
 using Elearning.Models;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,18 +13,32 @@ namespace Elearning.Utilities
 {
     public class EmailUtility
     {
-        public static void ApprovalEmail(string email, string name, string courseName)
+        public static void SendApprovalEmail(IConfiguration configuration, string email, string name, string courseName)
         {
-            var fromAddress = new MailAddress("ncbelearninguniversity@gmail.com", "NCB E-learning University");
-            var toAddress = new MailAddress(email, name);
-            const string fromPassword = "Pa$$word01234";
             const string subject = "Subscription to course";
             string body = ("This is confirmation that your request to subscribe to course " + courseName + " is approved");
 
+            SendEmail(configuration, email, name, subject, body);
+        }
+
+        public static void SendLoginCredential(IConfiguration configuration, string email, string name, string studentId)
+        {
+            const string subject = "Login Credential";
+            string body = ("This is confirmation that your request to register as a student to NCB Elearing University was successful. Your student id is: " + studentId + " use this when logging into the system.");
+
+            SendEmail(configuration, email, name, subject, body);
+        }
+
+        public static void SendEmail(IConfiguration configuration, string email, string recipientName, string subject, string body)
+        {
+            var fromAddress = new MailAddress(configuration.GetSection("EmailSettings:From").Value, configuration.GetSection("EmailSettings:Name").Value);
+            var toAddress = new MailAddress(email, recipientName);
+            string fromPassword = configuration.GetSection("EmailSettings:Password").Value;
+
             var smtp = new SmtpClient
             {
-                Host = "smtp.gmail.com",
-                Port = 587,
+                Host = configuration.GetSection("EmailSettings:Host").Value,
+                Port = int.Parse(configuration.GetSection("EmailSettings:Port").Value),
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
