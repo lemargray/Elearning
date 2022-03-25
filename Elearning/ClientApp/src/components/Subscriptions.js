@@ -1,10 +1,18 @@
 ﻿import React, { Component, useState, useEffect } from 'react';
 import { Container } from 'reactstrap';
 import { NavMenu } from './NavMenu';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 import moment from 'moment';
 
+import { objToQueryString } from '../utils/functions'
+
 export default function Courses(props) {
-    const [ subscriptions, setSubscriptions ] = useState([]);
+    const [subscriptions, setSubscriptions] = useState([]);
+    const [name, setName] = useState('');
+    const [lecturer, setLecturer] = useState('');
+    const [dateOffered, setDateOffered] = useState('');
+    const [dateSubscribed, setDateSubscribed] = useState('');
 
     useEffect(() => {
         const studentId = localStorage.getItem('studentId');
@@ -21,6 +29,42 @@ export default function Courses(props) {
         })
     }, []);
 
+    const searchHandler = (key, value) => {
+        const studentId = localStorage.getItem('studentId');
+
+        if (key == 'courseTile') {
+            setName(value);
+        } else if (key == 'lecturerName') {
+            setLecturer(value);
+        } else if (key == 'dateOffered') {
+            setDateOffered(value);
+            value = value != '' && value != null ? moment(value).format("YYYY-MM-DD") : '';
+        } else if (key == 'dateSubscribed') {
+            setDateSubscribed(value);
+            value = value != '' && value != null ? moment(value).format("YYYY-MM-DD") : '';
+        }
+
+        let data = {
+            courseTitle: name,
+            lecturerName: lecturer,
+            dateOffered: (dateOffered != '' && dateOffered != null) ? moment(dateOffered).format("YYYY-MM-DD") : '',
+            dateSubscribed: (dateSubscribed != '' && dateSubscribed != null) ? moment(dateSubscribed).format("YYYY-MM-DD") : ''
+        };
+        data[key] = value;
+
+        let queryParams = objToQueryString(data);
+
+        fetch("/api/students/" + studentId + "/courses?" + queryParams, {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        })
+        .then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            setSubscriptions(data);
+        })
+    };
     
     const dataTrs = subscriptions.map(function (subscription, index) {
         return <tr key={index}>
@@ -46,7 +90,13 @@ export default function Courses(props) {
                             <td>Lecturer</td>
                             <td>Date Offered</td>
                             <td>Date Subscribed</td>
-                        </tr>
+                            </tr>
+                            <tr>
+                                <td><input onChange={(e) => searchHandler('courseTitle', e.target.value)} type="text" /></td>
+                                <td><input onChange={(e) => searchHandler('lecturerName', e.target.value)} type="text" /></td>
+                                <td><DatePicker selected={dateOffered} dateFormat="dd/MM/yyyy" onChange={(date) => searchHandler('dateOffered', date)} /></td>
+                                <td><DatePicker selected={dateSubscribed} dateFormat="dd/MM/yyyy" onChange={(date) => searchHandler('dateSubscribed', date)} /></td>
+                            </tr>
                     </thead>
                     <tbody>
                         {dataTrs}

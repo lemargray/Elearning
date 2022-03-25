@@ -24,7 +24,7 @@ namespace Elearning.Utilities
         public static void SendLoginCredential(IConfiguration configuration, string email, string name, string studentId)
         {
             const string subject = "Login Credential";
-            string body = ("This is confirmation that your request to register as a student to NCB Elearing University was successful. Your student id is: " + studentId + " use this when logging into the system.");
+            string body = ("This is confirmation that your request to register as a student to NCB Elearning University was successful. Your student id is: " + studentId + " use this when logging into the system.");
 
             SendEmail(configuration, email, name, subject, body);
         }

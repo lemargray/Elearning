@@ -24,9 +24,9 @@ namespace Elearning.Controllers
         }
 
         [HttpGet]
-        public IActionResult list([FromQuery] int studentId)
+        public IActionResult list([FromQuery] AvailableCoursesRequest request)
         {
-            return Ok(CourseService.AvailableCourses(studentId));
+            return Ok(CourseService.AvailableCourses(request.StudentId, request.CourseTitle, request.LecturerName, request.OfferingDate));
         }
 
         [HttpGet]
@@ -34,7 +34,6 @@ namespace Elearning.Controllers
         public IActionResult search([FromQuery] SearchCoursesRequest request)
         {
             return Ok(CourseService.SearchCourses(request.CourseTitle, request.LecturerName, request.OfferingDate));
-            //return Ok(CourseService.GetCourses());
         }
     }
 }

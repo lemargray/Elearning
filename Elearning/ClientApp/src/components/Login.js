@@ -120,7 +120,7 @@ export default function Login(props) {
                                 </div>
                             </div>
                             <div className="footer">
-                                Copyright &copy; 2017 &mdash; NCB E-learning University
+                                Copyright &copy; 2022 &mdash; NCB E-learning University
                             </div>
                         </div>
                     </div>

@@ -30,14 +30,31 @@ namespace Elearning.Services
             return FacilitiesDb.Courses.Find(courseId);
         }
 
-        public List<AvailableCoursesResponse> AvailableCourses(int studentId)
+        public List<AvailableCoursesResponse> AvailableCourses(int studentId, string courseTitle, string lecturerName, DateTime? offeringDate)
         {
-            var courses = FacilitiesDb.Courses
+            var query = FacilitiesDb.Courses
                 .Where(c => !FacilitiesDb.CourseStudents
                     .Where(cs => cs.StudentId == studentId)
                     .Select(cs => cs.CourseId)
                     .Contains(c.CourseId)
-                ).Select(c => new AvailableCoursesResponse { LecturerId = c.Lecturer.LecturerId, CourseId = c.CourseId, Title = c.Name, Lecturer = c.Lecturer.Name, OfferingDate = c.OfferingDate });
+                );
+
+            if (!string.IsNullOrEmpty(courseTitle))
+            {
+                query = query.Where(c => c.Name.Contains(courseTitle));
+            }
+
+            if (!string.IsNullOrEmpty(lecturerName))
+            {
+                query = query.Where(c => c.Lecturer.Name.Contains(lecturerName));
+            }
+
+            if (offeringDate != null)
+            {
+                query = query.Where(c => c.OfferingDate == offeringDate);
+            }
+
+            var courses = query.Select(c => new AvailableCoursesResponse { LecturerId = c.Lecturer.LecturerId, CourseId = c.CourseId, Title = c.Name, Lecturer = c.Lecturer.Name, OfferingDate = c.OfferingDate });
 
             return courses.ToList();
         }
@@ -60,8 +77,6 @@ namespace Elearning.Services
 
         public bool AlreadySubscribe(int studentId, int courseId, int lectureId)
         {
-            //var student = FacilitiesDb.Students.Find(studentId);
-
             return FacilitiesDb.CourseStudents.Where(cs => cs.StudentId == studentId && cs.LecturerId == lectureId && cs.CourseId == courseId).Count() > 0;
         }
 
@@ -81,7 +96,8 @@ namespace Elearning.Services
 
             if (offeringDate != null)
             {
-                courses = courses.Where(c => c.OfferingDate == offeringDate);
+                courses = courses.Where(c => c.OfferingDate.Value.Date == offeringDate.Value.Date);
+                courses = courses.Where(c => c.OfferingDate.Value.Date == offeringDate.Value.Date);
             }
 
             var searchCourseResponses = courses.Select(c => new SearchCourseResponse

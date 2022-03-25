@@ -21,7 +21,6 @@ namespace Elearning.Controllers
 
         public StudentService StudentService { get; }
         public IConfiguration Configuration { get; }
-        //public IHttpContextAccessor COntext { get; }
 
         public StudentsController(CourseService courseService, StudentService studentService, IConfiguration configuration)
         {
@@ -33,8 +32,7 @@ namespace Elearning.Controllers
         [HttpPost]
         [Route("{studentId}/courses")]
         public IActionResult SubscribeToCourse(SubscribeToCourseRequest request, [FromRoute] int studentId)
-        {
-            
+        {            
             if (!AuthorizationUtility.isAuthorized(studentId, User))
             {
                 return Forbid();
@@ -63,14 +61,14 @@ namespace Elearning.Controllers
 
         [HttpGet]
         [Route("{studentId}/courses")]
-        public IActionResult SubscribedCourses(int studentId)
+        public IActionResult SubscribedCourses(int studentId, [FromQuery] GetStudentSubscriptionsRequest request)
         {
             if (!AuthorizationUtility.isAuthorized(studentId, User))
             {
                 return Forbid();
             }
 
-            return Ok(StudentService.GetSubscribedCourses(studentId));
+            return Ok(StudentService.GetSubscribedCourses(studentId, request));
         }
 
         [HttpGet]

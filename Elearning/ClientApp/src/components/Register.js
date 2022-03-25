@@ -159,7 +159,7 @@ export default function Register(props) {
                                 </div>
                             </div>
                             <div className="footer">
-                                Copyright &copy; 2017 &mdash; NCB E-learing University
+                                Copyright &copy; 2022 &mdash; NCB E-learing University
                             </div>
                         </div>
                     </div>
